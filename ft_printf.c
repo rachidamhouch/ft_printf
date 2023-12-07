@@ -118,12 +118,13 @@ int	ft_printf(const char *str, ...)
 	{
 		if (str[i] == '%')
 		{
-			len += formats(ptr, str[i + 1]);
+			if (!str[i + 1])
+				break ;
+			len += formats(ptr, str[i++ + 1]);
 			i++;
 		}
 		else
-			len += write(1, str + i, 1);
-		i++;
+			len += write(1, str + i++, 1);
 	}
 	va_end(ptr);
 	return (len);
