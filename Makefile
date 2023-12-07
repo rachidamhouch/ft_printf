@@ -13,7 +13,7 @@
 NAME=libftprintf.a
 CFLAGS=-Wall -Wextra -Werror
 RM=rm -f
-SRC = ft_putnbr.c ft_putunbr.c print_ptr.c ft_printf.c ft_putchar_fd.c ft_putstr_fd.c print_hex.c ft_strlen.c
+SRC = ft_printf.c 
 OBJ = $(SRC:.c=.o)
 
 all: $(NAME)

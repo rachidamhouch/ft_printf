@@ -12,25 +12,94 @@
 
 #include "ft_printf.h"
 
-int	formats(va_list ptr, char f)
+int	printu(unsigned long nb, int n, int p, unsigned long base)
+{
+	char						t;
+	char						*ptr;
+	unsigned long				z;
+	int							len;
+
+	len = 0;
+	ptr = "0123456789abcdef";
+	if (p)
+		len += write(1, "0x", 2);
+	else
+		nb = (unsigned int)nb;
+	if (n)
+		ptr = "0123456789ABCDEF";
+	z = 1;
+	while (nb / z >= base)
+		z *= base;
+	while (z > 0)
+	{
+		t = ptr[((nb / z) % base)];
+		len += write(1, &t, 1);
+		z /= base;
+	}
+	return (len);
+}
+
+int	putstr(char *s)
 {
 	int	len;
 
 	len = 0;
+	if (!s)
+		return (write(1, "(null)", 6));
+	while (s[len])
+		write(1, s + len++, 1);
+	return (len);
+}
+
+int	ft_putnbr(int nb)
+{
+	char	t;
+	long	nbr;
+	int		z;
+	int		len;
+
+	nbr = nb;
+	len = 0;
+	if (nbr < 0)
+	{
+		len += write(1, "-", 1);
+		nbr *= -1;
+	}
+	z = 1;
+	while (nbr / z >= 10)
+		z *= 10;
+	while (z > 0)
+	{
+		t = ((nbr / z) % 10) + '0';
+		len += write(1, &t, 1);
+		z /= 10;
+	}
+	return (len);
+}
+
+int	formats(va_list ptr, char f)
+{
+	int		len;
+	char	a;
+
+	len = 0;
 	if (f == 'c')
-		len += ft_putchar_fd(va_arg(ptr, int), 1);
+	{
+		a = va_arg(ptr, int);
+		len += write(1, &a, 1);
+	}
 	else if (f == 's')
-		len += ft_putstr_fd(va_arg(ptr, char *), 1);
+		len += putstr(va_arg(ptr, char *));
 	else if (f == 'p')
-		len += print_ptr(va_arg(ptr, void *));
+		len += printu((unsigned long )va_arg(ptr, void *), 0, 1, 16);
 	else if (f == 'd' || f == 'i')
 		len += ft_putnbr(va_arg(ptr, int));
 	else if (f == 'u')
-		len += ft_putunbr(va_arg(ptr, int));
+		len += printu(va_arg(ptr, int), 0, 0, 10);
 	else if (f == 'x')
-		len += printhex(va_arg(ptr, unsigned int), 0);
+		len += printu(va_arg(ptr, unsigned int), 0, 0, 16);
 	else if (f == 'X')
-		len += printhex(va_arg(ptr, unsigned int), 1);
+		len += printu(va_arg(ptr, unsigned int), 1, 0, 16);
 	else if (f == '%')
 		len += write(1, "%", 1);
 	return (len);
