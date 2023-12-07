@@ -23,8 +23,6 @@ int	printu(unsigned long nb, int n, int p, unsigned long base)
 	ptr = "0123456789abcdef";
 	if (p)
 		len += write(1, "0x", 2);
-	else
-		nb = (unsigned int)nb;
 	if (n)
 		ptr = "0123456789ABCDEF";
 	z = 1;
@@ -53,9 +51,7 @@ int	putstr(char *s)
 
 int	ft_putnbr(int nb)
 {
-	char	t;
 	long	nbr;
-	int		z;
 	int		len;
 
 	nbr = nb;
@@ -65,15 +61,7 @@ int	ft_putnbr(int nb)
 		len += write(1, "-", 1);
 		nbr *= -1;
 	}
-	z = 1;
-	while (nbr / z >= 10)
-		z *= 10;
-	while (z > 0)
-	{
-		t = ((nbr / z) % 10) + '0';
-		len += write(1, &t, 1);
-		z /= 10;
-	}
+	len += printu(nbr, 0, 0, 10);
 	return (len);
 }
 
@@ -95,7 +83,7 @@ int	formats(va_list ptr, char f)
 	else if (f == 'd' || f == 'i')
 		len += ft_putnbr(va_arg(ptr, int));
 	else if (f == 'u')
-		len += printu(va_arg(ptr, int), 0, 0, 10);
+		len += printu((unsigned int)va_arg(ptr, int), 0, 0, 10);
 	else if (f == 'x')
 		len += printu(va_arg(ptr, unsigned int), 0, 0, 16);
 	else if (f == 'X')
